@@ -2,25 +2,19 @@ extends Node2D
 
 @export var cell_size = Vector2i(64, 64)
 
-var astar_grid = AStarGrid2D.new()
-var grid_size
+var grid_size = Vector2i(5, 5)
 
 var walls: Array[Vector2i] = []
 
+@onready var model: Node = $"../Model"
+
 func _ready() -> void:
-	initialize_grid()
+	pass
 
 func _draw() -> void:
 	draw_grid()
 	for wall in walls:
 		draw_rect(Rect2(wall * cell_size, cell_size), Color.ORANGE_RED)
-
-func initialize_grid():
-	grid_size = Vector2i(get_viewport_rect().size) / cell_size
-	astar_grid.size = grid_size
-	astar_grid.cell_size = cell_size
-	astar_grid.offset = cell_size / 2
-	astar_grid.update()
 	
 func draw_grid():
 	for x in grid_size.x + 1:
@@ -33,9 +27,6 @@ func draw_grid():
 			Color.DARK_GRAY, 2.0)
 
 func display_dungeon(dungeon: Array):
-	for row in dungeon:
-		print(row)
-		
 	walls.clear()
 	
 	for y in range(dungeon.size()):

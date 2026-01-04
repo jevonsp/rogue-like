@@ -17,7 +17,6 @@ func bind(model: Model):
 			modulate = Color.RED
 
 func display(pos: Vector2i):
-	print("would display here")
 	position = v2i_to_display(pos, cell_size)
 
 func on_model_moved(model: Model):
@@ -27,5 +26,5 @@ func on_model_moved(model: Model):
 func on_model_attacked(_model: Model):
 	pass
 	
-func on_model_died(_dungeon_vec: Vector2i, _model: Model):
+func on_model_died(_model: Model):
 	queue_free()

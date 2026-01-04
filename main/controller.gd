@@ -27,6 +27,8 @@ func _input(event: InputEvent) -> void:
 func setup_game():
 	setup_connections()
 	model.make_dungeon()
+	Pathfinder.model = model
+	Pathfinder.initialize_astar()
 	spawn_obj(starting_pos, "@")
 	model.player_vec = Vector2i(starting_pos.x - 1, starting_pos.y - 1)
 	spawn_obj(Vector2i(5,4), "E")
@@ -37,10 +39,10 @@ func setup_connections():
 
 func spawn_obj(display_pos: Vector2i, char_repr: String):
 	var array_pos = Model.display_to_array(display_pos)
-	print("placing %s at display %s, array %s" % [char_repr, display_pos, array_pos])
 	model.place_obj(array_pos, char_repr)
 	
 	var new_model = Model.new()
+	new_model.model = model
 	new_model.char_repr = char_repr
 	new_model.dungeon_vec = array_pos
 	
@@ -61,5 +63,5 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 			enemy_counter += 1
 			new_model.name = "Enemy %s" % [enemy_counter]
 			new_model.model_died.connect(model.remove_obj)
-			model.enemies[new_model] = array_pos
+			model.enemies.append(new_model)
 	model.add_child(new_model)

@@ -7,7 +7,7 @@ signal dungeon_updated(dung: Array)
 var dungeon: Array = []
 
 var player: Model
-var enemies: Dictionary = {}
+var enemies: Array = []
 
 var player_vec: Vector2i = Vector2.ZERO
 
@@ -27,25 +27,36 @@ func make_dungeon():
 
 func move_player(dir: Vector2i):
 	if not player.can_act:
+		print("player cant act")
 		return
 		
 	var want_to_move = player_vec + dir
-	
-	var move = validate_move_to(want_to_move)
-	
-	if move:
-		player.can_act = false
-		move_obj(player_vec, want_to_move, "@", player)
-		player_vec = want_to_move
-	
+
 	var attack = validate_attack_to(want_to_move, player)
-	
 	if attack:
 		player.can_act = false
-		var target = enemies.find_key(want_to_move)
+		var target: Model
+		for enemy: Model in enemies:
+			if enemy.dungeon_vec == want_to_move:
+				target = enemy
+		
 		if target:
 			player.attack(target)
 			dungeon_updated.emit(dungeon)
+		return
+			
+	var move = validate_move_to(want_to_move)
+	if move:
+		player.can_act = false
+		var target: Model
+		for enemy: Model in enemies:
+			if enemy.dungeon_vec == want_to_move:
+				target = enemy
+		if target:
+			player.attack(target)
+		move_obj(player_vec, want_to_move, "@", player)
+		player_vec = want_to_move
+		
 
 func place_obj(pos: Vector2i, char_repr: String):
 	dungeon[pos.x][pos.y] = char_repr
@@ -82,17 +93,15 @@ func validate_attack_to(pos: Vector2i, attacker: Model) -> bool:
 
 func on_player_turn_taken(model: Model):
 	if model.char_repr == "@":
-		print("player took turn")
 		take_enemy_turns()
 
 func take_enemy_turns():
 	for enemy: Model in enemies:
-		print("%s would take turn here" % [enemy])
 		enemy.take_turn()
 	player.can_act = true
 	
-func remove_obj(pos: Vector2i, model: Model):
-	print("remove called")
+func remove_obj(model: Model):
+	var pos = model.dungeon_vec
 	if enemies.has(model):
 		enemies.erase(model)
 	dungeon[pos.x][pos.y] = "."

@@ -5,12 +5,13 @@ signal model_moved(model)
 signal model_attacked(model)
 signal model_died(model)
 
+var model: Node
+
 var char_repr: String = ""
 var can_act: bool = false
 var dungeon_vec: Vector2i = Vector2i.ZERO:
 	set(value):
 		dungeon_vec = value
-		print("%s moved to %s" % [char_repr, dungeon_vec])
 		model_moved.emit(self)
 
 var attack_damage: float = 1.0
@@ -31,7 +32,19 @@ func _ready() -> void:
 	current_hitpoints = max_hitpoints
 
 func take_turn():
-	pass
+	var path = Pathfinder.get_grid_path(dungeon_vec, model.player_vec)
+	
+	if path.size() > 1:
+		var next_step = Vector2i(path[1])
+		
+		if model.validate_move_to(next_step):
+			if next_step == model.player_vec:
+				attack(model.player)
+			model.move_obj(dungeon_vec, next_step, "E", self)
+		elif model.validate_attack_to(next_step, self):
+			var target = model.player
+			if target:
+				attack(target)
 	
 func attack(defender: Model):
 	defender.current_hitpoints -= attack_damage
@@ -43,8 +56,8 @@ func attack(defender: Model):
 	
 func die():
 	match char_repr:
-		"@": print("player would die here")
+		"@":
+			print("player would die here")
 		"E":
-			print("enemy would die here")
-			model_died.emit(dungeon_vec, self)
+			model_died.emit(self)
 			queue_free()

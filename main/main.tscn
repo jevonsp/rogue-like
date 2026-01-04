@@ -15,3 +15,6 @@ script = ExtResource("2_1bvp3")
 
 [node name="View" type="Node2D" parent="."]
 script = ExtResource("3_lquwl")
+
+[node name="Line2D" type="Line2D" parent="View"]
+width = 5.0
