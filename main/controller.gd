@@ -35,7 +35,6 @@ func setup_game():
 
 func setup_connections():
 	player_move_attempt.connect(model.move_player)
-	model.dungeon_updated.connect(view.display_dungeon)
 
 func spawn_obj(display_pos: Vector2i, char_repr: String):
 	var array_pos = Model.display_to_array(display_pos)
@@ -50,7 +49,6 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 	new_view.cell_size = view.cell_size
 	new_view.bind(new_model)
 	new_view.display(display_pos)
-	view.add_child((new_view))
 	
 	match char_repr:
 		"@":
@@ -64,4 +62,6 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 			new_model.name = "Enemy %s" % [enemy_counter]
 			new_model.model_died.connect(model.remove_obj)
 			model.enemies.append(new_model)
+			
 	model.add_child(new_model)
+	view.add_child((new_view))

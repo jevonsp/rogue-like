@@ -33,9 +33,7 @@ func _ready() -> void:
 
 func take_turn():
 	var path = Pathfinder.get_grid_path(dungeon_vec, model.player_vec)
-	
 	if len(path) > sight_range:
-		print("no player in sight")
 		while true:
 			var dir = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT].pick_random()
 			var move = dungeon_vec + dir
@@ -48,9 +46,7 @@ func take_turn():
 		var next_step = Vector2i(path[1])
 		var rand = randf()
 		var stick = (rand > (1.0 - stickiness))
-		print(rand)
 		if stick:
-			print("stuck")
 			if model.validate_move_to(next_step):
 				if next_step == model.player_vec:
 					attack(model.player)
@@ -60,7 +56,6 @@ func take_turn():
 				if target:
 					attack(target)
 		else:
-			print("monster didnt stick")
 			while true:
 				var dir = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT].pick_random()
 				var move = dungeon_vec + dir
@@ -72,8 +67,6 @@ func take_turn():
 func attack(defender: Model):
 	defender.current_hitpoints -= attack_damage
 	model_attacked.emit(self)
-	print("%s attacked %s" % [self, defender])
-	print("%s at %s hp" % [defender, defender.current_hitpoints])
 	if defender.current_hitpoints <= 0:
 		defender.die()
 	
