@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkw4pujbh4j0c"]
+
+[ext_resource type="Script" uid="uid://dcwd62pxdg6v8" path="res://controller.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://cdw4rbet54qwu" path="res://model.gd" id="2_1bvp3"]
+[ext_resource type="Script" uid="uid://b0c500hma4feb" path="res://view.gd" id="3_lquwl"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Controller" type="Node" parent="."]
+script = ExtResource("1_h2yge")
+
+[node name="Model" type="Node" parent="."]
+script = ExtResource("2_1bvp3")
+
+[node name="View" type="Node" parent="."]
+script = ExtResource("3_lquwl")
+
+[connection signal="player_moved" from="Controller" to="Model" method="move_player"]
+[connection signal="player_spawned" from="Controller" to="Model" method="update_player"]
+[connection signal="dungeon_ready" from="Model" to="Controller" method="spawn_player"]
+[connection signal="dungeon_updated" from="Model" to="View" method="display_dungeon"]
