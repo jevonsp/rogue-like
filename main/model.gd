@@ -27,7 +27,7 @@ func make_dungeon():
 
 func move_player(dir: Vector2i):
 	if not player.can_act:
-		print("player cant act")
+		print("player cant act") 
 		return
 		
 	var want_to_move = player_vec + dir

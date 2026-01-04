@@ -8,7 +8,7 @@
 
 [node name="Controller" type="Node" parent="."]
 script = ExtResource("1_h2yge")
-starting_pos = Vector2i(4, 4)
+starting_pos = Vector2i(2, 2)
 
 [node name="Model" type="Node" parent="."]
 script = ExtResource("2_1bvp3")
