@@ -7,6 +7,8 @@ signal player_move_attempt(dir: Vector2i)
 @onready var model: Node = $"../Model"
 @onready var view: Node = $"../View"
 
+var enemy_counter: int = 0
+
 func _ready() -> void:
 	setup_game()
 
@@ -40,7 +42,13 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 	new_model.dungeon_vec = array_pos
 	match char_repr:
 		"@":
+			new_model.name = "Player"
+			new_model.model_moved.connect(model.on_player_turn_taken)
+			new_model.model_attacked.connect(model.on_player_turn_taken)
 			model.player = new_model
+			new_model.can_act = true
 		"E":
+			enemy_counter += 1
+			new_model.name = "Enemy %s" % [enemy_counter]
 			model.enemies[new_model] = array_pos
 	model.add_child(new_model)
