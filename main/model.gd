@@ -86,6 +86,14 @@ func on_player_turn_taken(model: Model):
 		take_enemy_turns()
 
 func take_enemy_turns():
-	for enemy in enemies:
+	for enemy: Model in enemies:
 		print("%s would take turn here" % [enemy])
+		enemy.take_turn()
 	player.can_act = true
+	
+func remove_obj(pos: Vector2i, model: Model):
+	print("remove called")
+	if enemies.has(model):
+		enemies.erase(model)
+	dungeon[pos.x][pos.y] = "."
+	dungeon_updated.emit(dungeon)

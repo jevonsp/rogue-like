@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://da6owaxu4mwm1"]
+
+[ext_resource type="Script" uid="uid://ds88km1dliw8a" path="res://entities/View.gd" id="1_clhkj"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_clhkj"]
+size = Vector3(64, 64, 1)
+
+[node name="View" type="Node2D"]
+script = ExtResource("1_clhkj")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+mesh = SubResource("BoxMesh_clhkj")

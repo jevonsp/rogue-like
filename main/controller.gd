@@ -7,6 +7,8 @@ signal player_move_attempt(dir: Vector2i)
 @onready var model: Node = $"../Model"
 @onready var view: Node = $"../View"
 
+const VIEW = preload("res://entities/view.tscn")
+
 var enemy_counter: int = 0
 
 func _ready() -> void:
@@ -37,9 +39,17 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 	var array_pos = Model.display_to_array(display_pos)
 	print("placing %s at display %s, array %s" % [char_repr, display_pos, array_pos])
 	model.place_obj(array_pos, char_repr)
+	
 	var new_model = Model.new()
 	new_model.char_repr = char_repr
 	new_model.dungeon_vec = array_pos
+	
+	var new_view: View = VIEW.instantiate()
+	new_view.cell_size = view.cell_size
+	new_view.bind(new_model)
+	new_view.display(display_pos)
+	view.add_child((new_view))
+	
 	match char_repr:
 		"@":
 			new_model.name = "Player"
@@ -50,5 +60,6 @@ func spawn_obj(display_pos: Vector2i, char_repr: String):
 		"E":
 			enemy_counter += 1
 			new_model.name = "Enemy %s" % [enemy_counter]
+			new_model.model_died.connect(model.remove_obj)
 			model.enemies[new_model] = array_pos
 	model.add_child(new_model)
