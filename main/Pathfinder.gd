@@ -6,8 +6,8 @@ var model
 var dimensions: Vector2i = Vector2i(6, 6)
 
 func initialize_astar():
-	
 	astar_grid.size = Vector2i(dimensions.x, dimensions.y)
+	print("size: %s" % [astar_grid.size])
 	astar_grid.cell_size = Vector2i(1, 1)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar_grid.update()
