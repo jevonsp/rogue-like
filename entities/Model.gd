@@ -21,18 +21,12 @@ var current_hitpoints: float
 var stickiness: float = 0.8
 var sight_range: int = 5
 
-static func array_to_display(pos: Vector2i) -> Vector2i:
-	return Vector2i(pos.y + 1, pos.x + 1)
-
-static func display_to_array(pos: Vector2i) -> Vector2i:
-	return Vector2i(pos.y - 1, pos.x - 1)
-
 func _ready() -> void:
-	print("%s spawned at %s" % [char_repr, dungeon_vec])
 	current_hitpoints = max_hitpoints
 
 func take_turn():
 	var path = Pathfinder.get_grid_path(dungeon_vec, model.player_vec)
+	print("path: %s" % [path])
 	if len(path) > sight_range:
 		while true:
 			var dir = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT].pick_random()

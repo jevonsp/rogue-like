@@ -1,6 +1,6 @@
 extends Node
 
-@export var starting_pos: Vector2i = Vector2i(5, 5)
+@export var starting_pos: Vector2i = Vector2i(1, 1)
 
 signal player_move_attempt(dir: Vector2i)
 
@@ -16,39 +16,38 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("up"):
-		player_move_attempt.emit(Vector2i(-1, 0))
+		player_move_attempt.emit(Vector2.UP)
 	elif event.is_action_pressed("down"):
-		player_move_attempt.emit(Vector2i(1, 0))
+		player_move_attempt.emit(Vector2.DOWN)
 	elif event.is_action_pressed("left"):
-		player_move_attempt.emit(Vector2i(0, -1))
+		player_move_attempt.emit(Vector2.LEFT)
 	elif event.is_action_pressed("right"):
-		player_move_attempt.emit(Vector2i(0, 1))
+		player_move_attempt.emit(Vector2.RIGHT)
 
 func setup_game():
 	setup_connections()
 	model.make_dungeon()
 	Pathfinder.model = model
 	Pathfinder.initialize_astar()
-	spawn_obj(starting_pos, "@")
-	model.player_vec = Vector2i(starting_pos.x - 1, starting_pos.y - 1)
+	spawn_obj(Vector2i(starting_pos.x + 1, starting_pos.y + 1), "@")
+	model.player_vec = Vector2i(starting_pos.x + 1, starting_pos.y + 1)
 	spawn_obj(Vector2i(5,4), "E")
 
 func setup_connections():
 	player_move_attempt.connect(model.move_player)
 
-func spawn_obj(display_pos: Vector2i, char_repr: String):
-	var array_pos = Model.display_to_array(display_pos)
-	model.place_obj(array_pos, char_repr)
+func spawn_obj(pos: Vector2i, char_repr: String):
+	model.place_obj(pos, char_repr)
 	
 	var new_model = Model.new()
 	new_model.model = model
 	new_model.char_repr = char_repr
-	new_model.dungeon_vec = array_pos
+	new_model.dungeon_vec = pos
 	
 	var new_view: View = VIEW.instantiate()
 	new_view.cell_size = view.cell_size
 	new_view.bind(new_model)
-	new_view.display(display_pos)
+	new_view.display(pos)
 	
 	match char_repr:
 		"@":

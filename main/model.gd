@@ -3,8 +3,8 @@ extends Node
 signal dungeon_updated(dung: Array)
 
 var map: TileMapLayer
-var walls: Array[Vector2i]
-var floors: Array[Vector2i]
+var walls: Array = []
+var floors: Array = []
 
 var player: Model
 var enemies: Array = []
@@ -16,29 +16,9 @@ func make_dungeon():
 	
 	map = $"../Map/Map"
 	
-	# First, let's see the actual bounds
 	var used_rect = map.get_used_rect()
 	print("Used rect: position=%s, size=%s" % [used_rect.position, used_rect.size])
 	
-	# Check every single cell in the used rect
-	print("\nFull grid contents:")
-	for y in range(used_rect.position.y, used_rect.position.y + used_rect.size.y):
-		var row = ""
-		for x in range(used_rect.position.x, used_rect.position.x + used_rect.size.x):
-			var cell = Vector2i(x, y)
-			if map.get_cell_source_id(cell) != -1:  # Has a tile
-				var atlas_coords = map.get_cell_atlas_coords(cell)
-				if atlas_coords == Vector2i(0, 0):
-					row += "#"  # Wall
-				elif atlas_coords == Vector2i(1, 0):
-					row += "."  # Floor
-				else:
-					row += "?"  # Unexpected tile
-			else:
-				row += " "  # Empty
-		print(row)
-	
-	# Now get walls and floors
 	var map_walls = map.get_used_cells_by_id(0, Vector2i(0, 0))
 	var map_floors = map.get_used_cells_by_id(0, Vector2i(1, 0))
 	
@@ -47,15 +27,11 @@ func make_dungeon():
 	
 	walls = map_walls
 	walls.sort()
-	print("walls: ")
-	print(walls)
+	
+	walls = walls.map(func(wall): return Vector2i(wall.x + 1, wall.y + 1))
+	
 	floors = map_floors
 	floors.sort()
-	print("floors: ")
-	print(floors)
-	
-	var bounds = map.get_used_rect()
-	Pathfinder.dimensions = Vector2i(bounds.size.x, bounds.size.y)
 
 func move_player(dir: Vector2i):
 	if not player.can_act:

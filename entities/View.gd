@@ -1,10 +1,7 @@
 extends Node2D
 class_name View
 
-var cell_size
-
-static func v2i_to_display(pos: Vector2i, c_size: Vector2i) -> Vector2:
-	return Vector2(c_size.x * (pos.x - 1), c_size.y * (pos.y - 1)) + Vector2(c_size.x / 2.0, c_size.y / 2.0)
+var cell_size: Vector2i
 
 func bind(model: Model):
 	model.model_moved.connect(on_model_moved)
@@ -17,11 +14,13 @@ func bind(model: Model):
 			modulate = Color.RED
 
 func display(pos: Vector2i):
-	position = v2i_to_display(pos, cell_size)
+	position.x = pos.x * cell_size.x - (cell_size.x / 2.0)
+	position.y = pos.y * cell_size.y - (cell_size.x / 2.0)
 
 func on_model_moved(model: Model):
-	var pos = Model.array_to_display(model.dungeon_vec)
-	position = v2i_to_display(pos, cell_size)
+	var pos = model.dungeon_vec
+	position.x = pos.x * cell_size.x - (cell_size.x / 2.0)
+	position.y = pos.y * cell_size.y - (cell_size.x / 2.0)
 	
 func on_model_attacked(_model: Model):
 	pass
