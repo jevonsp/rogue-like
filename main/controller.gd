@@ -37,7 +37,6 @@ func setup_connections():
 	player_move_attempt.connect(model.move_player)
 
 func spawn_obj(pos: Vector2i, char_repr: String):
-	model.place_obj(pos, char_repr)
 	
 	var new_model = Model.new()
 	new_model.model = model

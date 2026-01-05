@@ -1,7 +1,5 @@
 extends Node
 
-signal dungeon_updated(dung: Array)
-
 var map: TileMapLayer
 var walls: Array = []
 var floors: Array = []
@@ -59,13 +57,9 @@ func move_player(dir: Vector2i):
 		if target:
 			player.attack(target)
 		player_vec = want_to_move
-		move_obj(player_vec, want_to_move, "@", player)
+		move_obj(want_to_move, player)
 
-
-func place_obj(pos: Vector2i, char_repr: String):
-	pass
-	
-func move_obj(from: Vector2i, to: Vector2i, char_repr: String, model: Model):
+func move_obj(to: Vector2i, model: Model):
 	model.dungeon_vec = to
 
 func validate_move_to(pos: Vector2i) -> bool:
@@ -81,21 +75,12 @@ func validate_move_to(pos: Vector2i) -> bool:
 
 func validate_attack_to(pos: Vector2i, attacker: Model) -> bool:
 	if attacker == player:
-		if pos == player_vec:
-			return false
-		if pos in walls:
-			return false
 		for enemy: Model in enemies:
 			if enemy.dungeon_vec == pos:
 				return true
 	else:
 		if pos == player_vec:
 			return true
-		if pos in walls:
-			return false
-		for enemy: Model in enemies:
-			if enemy.dungeon_vec == pos:
-				return false
 	return false
 
 func on_player_turn_taken(model: Model):
@@ -108,6 +93,5 @@ func take_enemy_turns():
 	player.can_act = true
 	
 func remove_obj(model: Model):
-	var pos = model.dungeon_vec
 	if enemies.has(model):
 		enemies.erase(model)

@@ -7,6 +7,3 @@ var grid_size = Vector2i(5, 5)
 var walls: Array[Vector2i] = []
 
 @onready var model: Node = $"../Model"
-
-func _ready() -> void:
-	pass

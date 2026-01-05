@@ -44,7 +44,7 @@ func take_turn():
 			if model.validate_move_to(next_step):
 				if next_step == model.player_vec:
 					attack(model.player)
-				model.move_obj(dungeon_vec, next_step, "E", self)
+				model.move_obj(next_step, self)
 			elif model.validate_attack_to(next_step, self):
 				var target = model.player
 				if target:
@@ -54,7 +54,7 @@ func take_turn():
 				var dir = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT].pick_random()
 				var move = dungeon_vec + dir
 				if model.validate_move_to(move):
-					model.move_obj(dungeon_vec, move, "E", self)
+					model.move_obj(move, self)
 					break
 			return
 	
