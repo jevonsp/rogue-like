@@ -11,8 +11,56 @@ const VIEW = preload("res://entities/view.tscn")
 
 var enemy_counter: int = 0
 
+var held_timer: float = 0.0
+var limit_timer: float = 0.0
+var held_keys = []
+
 func _ready() -> void:
 	setup_game()
+	
+func _process(delta: float) -> void:
+	if not held_keys.is_empty():
+		held_timer += delta
+		if held_timer >= 0.5:
+			
+			match held_keys.back():
+				"up": 
+					if limit_timer <= 0.0:
+						player_move_attempt.emit(Vector2.UP)
+				"down": 
+					if limit_timer <= 0.0:
+						player_move_attempt.emit(Vector2.DOWN)
+				"left": 
+					if limit_timer <= 0.0:
+						player_move_attempt.emit(Vector2.LEFT)
+				"right": 
+					if limit_timer <= 0.0:
+						player_move_attempt.emit(Vector2.RIGHT)
+						
+			limit_timer += delta
+			if limit_timer >= 0.25:
+				limit_timer = 0.0
+	else:
+		held_timer = 0.0
+		limit_timer = 0.0
+		
+	if Input.is_action_just_pressed("up"):
+		held_keys.push_back("up")
+	elif Input.is_action_just_released("up"):
+		held_keys.erase("up")
+	if Input.is_action_just_pressed("down"):
+		held_keys.push_back("down")
+	elif Input.is_action_just_released("down"):
+		held_keys.erase("down")
+	if Input.is_action_just_pressed("left"):
+		held_keys.push_back("left")
+	elif Input.is_action_just_released("left"):
+		held_keys.erase("left")
+	if Input.is_action_just_pressed("right"):
+		held_keys.push_back("right")
+	elif Input.is_action_just_released("right"):
+		held_keys.erase("right")
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("up"):
