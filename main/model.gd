@@ -6,6 +6,7 @@ var floors: Array = []
 
 var player: Model
 var enemies: Array = []
+var items: Array = []
 
 var player_vec: Vector2i = Vector2.ZERO
 
@@ -61,6 +62,10 @@ func move_player(dir: Vector2i):
 
 func move_obj(to: Vector2i, model: Model):
 	model.dungeon_vec = to
+	if model == player:
+		for item in items:
+			if item.dungeon_vec == to:
+				item.on_pickup()
 
 func validate_move_to(pos: Vector2i) -> bool:
 	if pos == player_vec:
@@ -91,7 +96,9 @@ func take_enemy_turns():
 	for enemy: Model in enemies:
 		enemy.take_turn()
 	player.can_act = true
-	
+
 func remove_obj(model: Model):
 	if enemies.has(model):
 		enemies.erase(model)
+	if items.has(model):
+		items.erase(model)

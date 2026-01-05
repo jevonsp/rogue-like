@@ -8,6 +8,7 @@ signal player_move_attempt(dir: Vector2i)
 @onready var view: Node = $"../View"
 
 const VIEW = preload("res://entities/view.tscn")
+const TEST_ITEM = preload("res://items/TestItem.tres")
 
 var enemy_counter: int = 0
 
@@ -79,14 +80,23 @@ func setup_game():
 	Pathfinder.initialize_astar()
 	spawn_obj(Vector2i(starting_pos.x + 1, starting_pos.y + 1), "@")
 	model.player_vec = Vector2i(starting_pos.x + 1, starting_pos.y + 1)
-	spawn_obj(Vector2i(5,4), "E")
+	spawn_obj(Vector2i(5, 4), "E")
+	spawn_obj(Vector2i(3, 3), "I", TEST_ITEM)
 
 func setup_connections():
 	player_move_attempt.connect(model.move_player)
 
-func spawn_obj(pos: Vector2i, char_repr: String):
-	
-	var new_model = Model.new()
+func spawn_obj(pos: Vector2i, char_repr: String, info = null):
+	var new_model
+	match char_repr:
+		"I": 
+			new_model = Item.new()
+			model.items.append(new_model)
+			new_model.model_removed.connect(model.remove_obj)
+			new_model.item_added_to_inventory.connect(model.player.add_to_inventory)
+		_: new_model = Character.new()
+	if info:
+		new_model.data = info
 	new_model.model = model
 	new_model.char_repr = char_repr
 	new_model.dungeon_vec = pos
@@ -94,8 +104,11 @@ func spawn_obj(pos: Vector2i, char_repr: String):
 	var new_view: View = VIEW.instantiate()
 	new_view.cell_size = view.cell_size
 	new_view.bind(new_model)
-	new_view.display(pos)
 	
+	match char_repr:
+		"I": new_view.display(pos, Vector2(.5, .5))
+		_: new_view.display(pos)
+			
 	match char_repr:
 		"@":
 			new_model.name = "Player"
@@ -106,7 +119,7 @@ func spawn_obj(pos: Vector2i, char_repr: String):
 		"E":
 			enemy_counter += 1
 			new_model.name = "Enemy %s" % [enemy_counter]
-			new_model.model_died.connect(model.remove_obj)
+			new_model.model_removed.connect(model.remove_obj)
 			model.enemies.append(new_model)
 			
 	model.add_child(new_model)
