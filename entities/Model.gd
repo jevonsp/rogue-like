@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func take_turn():
 	var path = Pathfinder.get_grid_path(dungeon_vec, model.player_vec)
-	print("path: %s" % [path])
+	
 	if len(path) > sight_range:
 		while true:
 			var dir = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT].pick_random()
@@ -70,5 +70,4 @@ func die():
 			print("player would die here")
 		"E":
 			model_died.emit(self)
-			
 			queue_free()

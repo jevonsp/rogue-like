@@ -5,8 +5,8 @@ var model
 
 func initialize_astar():
 	var used_rect = model.map.get_used_rect()
-	astar_grid.size = Vector2i(used_rect.size.x - 1, used_rect.size.y - 1)
-	print("size: %s" % [astar_grid.size])
+	astar_grid.size = Vector2i(used_rect.size.x, used_rect.size.y)
+	print(astar_grid.size)
 	astar_grid.cell_size = Vector2i(1, 1)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar_grid.update()

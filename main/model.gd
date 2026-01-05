@@ -22,9 +22,6 @@ func make_dungeon():
 	var map_walls = map.get_used_cells_by_id(0, Vector2i(0, 0))
 	var map_floors = map.get_used_cells_by_id(0, Vector2i(1, 0))
 	
-	print("\nWalls found: %d" % map_walls.size())
-	print("Floors found: %d" % map_floors.size())
-	
 	walls = map_walls
 	walls.sort()
 	
@@ -39,7 +36,6 @@ func move_player(dir: Vector2i):
 		return
 		
 	var want_to_move = player_vec + dir
-	print(want_to_move)
 
 	var attack = validate_attack_to(want_to_move, player)
 	if attack:
